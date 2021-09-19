@@ -1,7 +1,9 @@
 package com.dov.firstapi.controller;
 
+import com.dov.firstapi.exceptionhandler.ResourceNotFoundException;
 import com.dov.firstapi.model.Person;
 import com.dov.firstapi.service.PersonService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +21,12 @@ public class PersonController {
         return personService.getAll();
     }
 
-    @GetMapping("/{id}")
-    private Person getPersonById(@PathVariable("id") int id){
+    @GetMapping(path="/{id}", produces = "application/json")
+    private Person getPersonById(@PathVariable("id") int id) throws ResourceNotFoundException {
+        Person person = personService.getOneById(id);
+        if (person == null){
+            throw new ResourceNotFoundException();
+        }
         return personService.getOneById(id);
     }
 
